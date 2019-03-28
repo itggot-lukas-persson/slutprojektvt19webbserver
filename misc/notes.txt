@@ -10,7 +10,9 @@ Valde idé:
 Idé beskrivning:
   Basic funktionalitet:
 - Alla inlägg är bara text. 
-- Ett forum där man ska kunna logga in, skriva egna inlägg, läsa andras inlägg, kommentera under sitt egna och andras inlägg.  
+- Ett forum där man ska kunna logga in, 
+skriva egna inlägg, läsa andras inlägg, 
+kommentera under sitt egna och andras inlägg.  
 - Man ska kunna läsa inlägg även om man inte är inloggad.
 - Man måste dock vara inloggad för att skapa inlägg och kommentera.
 
