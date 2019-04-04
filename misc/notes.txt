@@ -7,7 +7,7 @@ Ideer:
 Valde idé:
     1. Ett forum
 
-Idé beskrivning:
+Idé/projekt beskrivning:
   Basic funktionalitet:
 - Alla inlägg är bara text. 
 - Ett forum där man ska kunna logga in, 

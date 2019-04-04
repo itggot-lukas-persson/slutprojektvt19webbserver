@@ -18,19 +18,16 @@ get('/login') do
     slim(:login)
 end
 
-get('/logged') do
-    slim(:logged)
-end
 
 post('/newlogin') do
     db = SQLite3::Database.new("db/forum.db")
     db.results_as_hash = true
     result = db.execute("SELECT username, password FROM users WHERE username = ?",params[:username]).first
-    if BCrypt::Password.new(result["password"]) == params[:password]
+    unless result
+        redirect('/error')
+    else BCrypt::Password.new(result["password"]) == params[:password]
         session[:username] = result["username"]
         redirect('/')
-    else
-        redirect('/error')
     end
 end
 
@@ -38,7 +35,7 @@ get('/register') do
     slim(:register)
 end
 
-post('/register/new') do
+post('/register') do
     db = SQLite3::Database.new("db/forum.db")
     db.results_as_hash = true
     hash_passsword = BCrypt::Password.create(params[:password])
@@ -48,11 +45,12 @@ end
 
 
 get('/newpost') do 
-    if !session[:username] #Kollar att man är inloggad innan man får komma in
+    if !session[:username] #Kollar att man är inloggad innan man får komma in på sidan
         redirect back
     end
+    slim(:newpost)
+end
 
-
-
-
+get('/error') do
+    slim(:error)
 end
