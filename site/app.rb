@@ -51,6 +51,11 @@ get('/newpost') do
     slim(:newpost)
 end
 
+post('/newpost') do
+    db = SQLite3::Database.new("db/forum.db")
+    db.results_as_hash = true
+end
+
 get('/error') do
     slim(:error)
 end
