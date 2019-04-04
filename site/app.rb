@@ -5,9 +5,9 @@ require 'bcrypt'
 enable :sessions
 
 get('/') do
-    if session[:username]
+    if session[:user_id]
         db = SQLite3::Database.new("db/forum.db")
-        current_user = db.execute("SELECT username, password FROM users WHERE username = ?",session[:username]).first
+        current_user = db.execute("SELECT username, password FROM users WHERE id = ?",session[:user_id]).first
     else 
         current_user = nil
     end
@@ -22,11 +22,11 @@ end
 post('/newlogin') do
     db = SQLite3::Database.new("db/forum.db")
     db.results_as_hash = true
-    result = db.execute("SELECT username, password FROM users WHERE username = ?",params[:username]).first
+    result = db.execute("SELECT id, username, password FROM users WHERE id = ?",params[:username]).first
     unless result
         redirect('/error')
     else BCrypt::Password.new(result["password"]) == params[:password]
-        session[:username] = result["username"]
+        session[:user_id] = result["id"]
         redirect('/')
     end
 end
@@ -45,7 +45,7 @@ end
 
 
 get('/newpost') do 
-    if !session[:username] #Kollar att man är inloggad innan man får komma in på sidan
+    if !session[:user_id] #Kollar att man är inloggad innan man får komma in på sidan
         redirect back
     end
     slim(:newpost)
@@ -54,6 +54,8 @@ end
 post('/newpost') do
     db = SQLite3::Database.new("db/forum.db")
     db.results_as_hash = true
+    db.execute('INSERT INTO posts(text, user_id) VALUES ((?), (?))', [params[:post], session[:user_id]])
+    redirect('/')
 end
 
 get('/error') do
