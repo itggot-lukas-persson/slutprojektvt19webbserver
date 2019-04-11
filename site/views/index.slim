@@ -11,4 +11,8 @@ h1 Hej
 
 
 - posts.each do |post|
-    p = post[0]
+    -users.each do |user|
+        - if user["id"] == post["user_id"]
+            p = "Användare " + user["username"]
+            break
+    p = post["text"]

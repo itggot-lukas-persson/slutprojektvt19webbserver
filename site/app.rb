@@ -6,13 +6,15 @@ enable :sessions
 
 get('/') do
     db = SQLite3::Database.new("db/forum.db")
+    db.results_as_hash = true
     if session[:user_id]
         current_user = db.execute("SELECT username, password FROM users WHERE id = ?",session[:user_id]).first
     else 
         current_user = nil
     end
     posts = db.execute("SELECT * FROM posts").reverse
-    slim(:index, locals:{current_user:current_user, posts:posts})
+    users = db.execute("SELECT * FROM users")
+    slim(:index, locals:{current_user:current_user, posts:posts, users:users})
 end
 
 get('/login') do
