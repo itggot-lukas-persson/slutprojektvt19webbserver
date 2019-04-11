@@ -22,7 +22,7 @@ end
 post('/newlogin') do
     db = SQLite3::Database.new("db/forum.db")
     db.results_as_hash = true
-    result = db.execute("SELECT id, username, password FROM users WHERE id = ?",params[:username]).first
+    result = db.execute("SELECT id, username, password FROM users WHERE username = ?",params[:username]).first
     unless result
         redirect('/error')
     else BCrypt::Password.new(result["password"]) == params[:password]
