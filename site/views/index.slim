@@ -1,13 +1,13 @@
-h1 Hej
+h1 Forum - Skriv skit om allt och alla
 -if current_user 
     h2 Välkommen
     a href="/newpost" Gör ett nytt inlägg
     form action="/logout" method="post"
         input type="submit" value="Logout"
-- else
-    a href="/login" Login
+- else  
+    a href="/login" Logga in
     br
-    a href="/register" Register
+    a href="/register" Registrera ett nytt konto
 
 
 - posts.each do |post|
