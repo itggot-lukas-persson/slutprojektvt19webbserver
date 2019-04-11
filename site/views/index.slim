@@ -1,9 +1,14 @@
 h1 Hej
 -if current_user 
     h2 Välkommen
+    a href="/newpost" Gör ett nytt inlägg
+    form action="/logout" method="post"
+        input type="submit" value="Logout"
+- else
+    a href="/login" Login
+    br
+    a href="/register" Register
 
-a href="/login" Login
-br
-a href="/register" Register
-br 
-a href="/newpost" Gör ett nytt inlägg
+
+- posts.each do |post|
+    p = post[0]

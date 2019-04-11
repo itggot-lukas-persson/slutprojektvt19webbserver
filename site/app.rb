@@ -5,13 +5,14 @@ require 'bcrypt'
 enable :sessions
 
 get('/') do
+    db = SQLite3::Database.new("db/forum.db")
     if session[:user_id]
-        db = SQLite3::Database.new("db/forum.db")
         current_user = db.execute("SELECT username, password FROM users WHERE id = ?",session[:user_id]).first
     else 
         current_user = nil
     end
-    slim(:index, locals:{current_user:current_user})
+    posts = db.execute("SELECT * FROM posts").reverse
+    slim(:index, locals:{current_user:current_user, posts:posts})
 end
 
 get('/login') do
@@ -60,4 +61,9 @@ end
 
 get('/error') do
     slim(:error)
+end
+
+post('/logout') do
+    session.destroy
+    redirect("/")
 end
