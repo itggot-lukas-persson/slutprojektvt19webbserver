@@ -17,10 +17,22 @@ get('/') do
     slim(:index, locals:{current_user:current_user, posts:posts, users:users})
 end
 
+get('/comment') do
+    db = SQLite3::Database.new("db/forum.db")
+    db.results_as_hash = true
+    slim(:comment)
+end
+
+post('comment') do
+    db = SQLite3::Database.new("db/forum.db")
+    db.results_as_hash = true
+    db.execute('INSERT INTO comments(text, user_id) VALUES ((?), (?))', [params[:post], session[:user_id]])
+    redirect('/')
+end
+
 get('/login') do
     slim(:login)
 end
-
 
 post('/newlogin') do
     db = SQLite3::Database.new("db/forum.db")
