@@ -23,10 +23,10 @@ get('/comment') do
     slim(:comment)
 end
 
-post('comment') do
+post('/comment') do
     db = SQLite3::Database.new("db/forum.db")
     db.results_as_hash = true
-    db.execute('INSERT INTO comments(text, user_id) VALUES ((?), (?))', [params[:post], session[:user_id]])
+    db.execute('INSERT INTO comments(comment, user_id) VALUES ((?), (?))', [params[:post], session[:user_id]])
     redirect('/')
 end
 
