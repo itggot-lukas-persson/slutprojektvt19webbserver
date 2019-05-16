@@ -3,30 +3,22 @@ require 'slim'
 require 'sqlite3'
 require 'bcrypt'
 enable :sessions
+require_relative "module"
 
 get('/') do
-    db = SQLite3::Database.new("db/forum.db")
-    db.results_as_hash = true
-    if session[:user_id]
-        current_user = db.execute("SELECT username, password FROM users WHERE id = ?",session[:user_id]).first
-    else 
-        current_user = nil
-    end
-    posts = db.execute("SELECT * FROM posts").reverse
-    users = db.execute("SELECT * FROM users")
+    items = homepage()
+    users = items[2]
+    posts = items[1]
+    current_user = items[0]
     slim(:index, locals:{current_user:current_user, posts:posts, users:users})
 end
 
 get('/comment') do
-    db = SQLite3::Database.new("db/forum.db")
-    db.results_as_hash = true
     slim(:comment)
 end
 
 post('/comment') do
-    db = SQLite3::Database.new("db/forum.db")
-    db.results_as_hash = true
-    db.execute('INSERT INTO comments(comment, user_id) VALUES ((?), (?))', [params[:post], session[:user_id]])
+    comment(params)
     redirect('/')
 end
 
@@ -35,14 +27,16 @@ get('/login') do
 end
 
 post('/newlogin') do
-    db = SQLite3::Database.new("db/forum.db")
-    db.results_as_hash = true
-    result = db.execute("SELECT id, username, password FROM users WHERE username = ?",params[:username]).first
-    unless result
+    item = newlogin(params)
+    result = item[0] 
+    if result == nil
         redirect('/error')
-    else BCrypt::Password.new(result["password"]) == params[:password]
+    end
+    if BCrypt::Password.new(result["password"]) == params["password"]
         session[:user_id] = result["id"]
         redirect('/')
+    else
+        redirect('/error')
     end
 end
 
@@ -51,10 +45,7 @@ get('/register') do
 end
 
 post('/register') do
-    db = SQLite3::Database.new("db/forum.db")
-    db.results_as_hash = true
-    hash_passsword = BCrypt::Password.create(params[:password])
-    db.execute('INSERT INTO users(username, email, password) VALUES ((?), (?), (?))', params[:username], params[:email], hash_passsword)
+    register(params)
     redirect('/') 
 end
 
@@ -67,9 +58,7 @@ get('/newpost') do
 end
 
 post('/newpost') do
-    db = SQLite3::Database.new("db/forum.db")
-    db.results_as_hash = true
-    db.execute('INSERT INTO posts(text, user_id) VALUES ((?), (?))', [params[:post], session[:user_id]])
+    newpost(params)
     redirect('/')
 end
 
