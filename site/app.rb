@@ -6,11 +6,12 @@ enable :sessions
 require_relative "module"
 
 #configure do
-#    set :securepaths ['/newpost','/comment']  
+#   set :unsecurepaths ['/','/login', 'newlogin', 'register', '/error', '/logout']  #gör tvärtom, lägg till alla ickesäkrade routes och släpp igenom requesten men inte om routen inte finns i variabeln.
 #end
 secure = ['/newpost','/comment']
 
 before secure do
+    #settings.securepaths
     if !session[:user_id] #Kollar att man är inloggad innan man får komma in på sidan
         redirect('/')
     end
