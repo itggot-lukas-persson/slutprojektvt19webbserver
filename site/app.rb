@@ -5,6 +5,17 @@ require 'bcrypt'
 enable :sessions
 require_relative "module"
 
+#configure do
+#    set :securepaths ['/newpost','/comment']  
+#end
+secure = ['/newpost','/comment']
+
+before secure do
+    if !session[:user_id] #Kollar att man är inloggad innan man får komma in på sidan
+        redirect('/')
+    end
+end    
+
 get('/') do
     items = homepage()
     users = items[2]
@@ -51,9 +62,6 @@ end
 
 
 get('/newpost') do 
-    if !session[:user_id] #Kollar att man är inloggad innan man får komma in på sidan
-        redirect back
-    end
     slim(:newpost)
 end
 
